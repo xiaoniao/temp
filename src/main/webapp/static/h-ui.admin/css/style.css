@@ -1,0 +1,49 @@
+@charset "utf-8";
+/* 你自己的样式 */
+
+.main-col-kj li{
+	width: 25%;
+	float: left;
+	text-align: center;
+	line-height: 30px;
+}
+.main-col-kj li a{
+	text-decoration: none;
+}
+.main-col-kj li a:hover{
+	color: #148cf1;
+}
+
+.main-col-kj .iconbox{
+	width: 60px;
+	height: 60px;
+	margin: auto;
+}
+
+.main-col-hz li{
+	width: 40%;
+	float: left;
+	padding: 0 5%;
+}
+
+.mini-widget-heading{
+	padding: 6px 15px;
+    -webkit-border-radius: 2px 2px 0 0;
+    -moz-border-radius: 2px 2px 0 0;
+    border-radius: 2px 2px 0 0;
+    text-transform: uppercase;
+    background: #00c6c8;
+    color: white;
+}
+.mini-widget-body{
+	padding: 0 10px;
+    font-size: 36px;
+    font-weight: 300;
+    background: #00d3d2;
+    color: white;
+    text-align: right;
+}
+.checkbox-more{
+	float: right;
+	font-weight: normal;
+}

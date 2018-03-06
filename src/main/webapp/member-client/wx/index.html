@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black">
+	<meta name="format-detection" content="telephone=no">
+	<meta name="format-detection" content="email=no">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=0">
+	<title>登录中...</title>
+</head>
+	<body></body>
+	<script type="text/javascript" src="../js/jquery-1.4.2.min.js"></script>
+    <script type="text/javascript" src="../js/param.js"></script>
+    <script type="text/javascript">
+    	$(function() {
+    		
+    		// 获取微信认证码
+    		var code = $.request.queryString["code"];
+    		
+    		var get_userinfo_url = "/rest/mc/wx/get_userinfo/?code=" + code;
+    		
+    		// 微信获取用户信息
+    		$.ajax({ 
+    			type: 'GET', 
+    			url: get_userinfo_url,
+    			success: function(result) {
+    				var statusCode = result.statusCode;
+    				if (statusCode == 200) {
+    					var wxMember = result.data;
+    					localStorage.setItem("wx_info", JSON.stringify(wxMember));
+    					
+    					// 用户信息存贮完毕后跳转 WEBAPP首页
+						window.location.href = "http://localhost:8100";
+    				} else {
+    					alert("微信接口获取失败，请关闭浏览器重新尝试!");
+    				}
+    			}
+    		});
+    	});
+    </script>
+</html>

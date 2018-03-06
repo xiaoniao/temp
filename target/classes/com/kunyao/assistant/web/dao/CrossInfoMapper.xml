@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.kunyao.assistant.web.dao.CrossInfoMapper">
+	<resultMap id="BaseResultMap" type="com.kunyao.assistant.core.model.CrossInfo">
+	   <id column="id" property="id" jdbcType="INTEGER" />
+	   <result column="cross_number" property="crossNumber" jdbcType="VARCHAR" />
+	   <result column="name" property="name" jdbcType="VARCHAR" />
+	   <result column="work_name" property="workName" jdbcType="VARCHAR" />
+	   <result column="contact_phone" property="contactPhone" jdbcType="VARCHAR" />
+	   <result column="pic" property="pic" jdbcType="VARCHAR" />
+	   <result column="banners" property="banners" jdbcType="VARCHAR" />
+	   <result column="height" property="height" jdbcType="DECIMAL" />
+	   <result column="native_place" property="nativePlace" jdbcType="VARCHAR" />
+	   <result column="year_birth" property="yearBirth" jdbcType="VARCHAR" />
+	   <result column="school" property="school" jdbcType="VARCHAR" />
+	   <result column="education" property="education" jdbcType="VARCHAR" />
+	   <result column="constellation" property="constellation" jdbcType="VARCHAR" />
+	   <result column="work_age" property="workAge" jdbcType="INTEGER" />
+	   <result column="province_id" property="provinceId" jdbcType="INTEGER" />
+	   <result column="city_id" property="cityId" jdbcType="INTEGER" />
+	   <result column="native_place_city_id" property="nativePlaceCityId" jdbcType="INTEGER"/>
+	   <result column="native_place_province_id" property="nativePlaceProvinceId" jdbcType="INTEGER" />
+	   <result column="user_id" property="userId" jdbcType="INTEGER" />
+	</resultMap>
+
+	<select id="selectListByCondition" resultMap="BaseResultMap" parameterType="com.kunyao.assistant.core.model.CrossInfo">
+	   	SELECT  
+	   		ci.id, ci.cross_number AS crossNumber, ci.banners, tc.name AS cityName, ci.name, ci.work_name AS workName,   
+            ci.contact_phone AS contactPhone, uu.mobile as mobile, uu.status as status, ci.sex, ci.height, ci.work_age,
+            ci.school, ci.pic 
+	    FROM 
+	    	kycom_u_cross_info ci    	    	                                                              				     
+		LEFT JOIN                                                                                  					
+		    kycom_t_city tc ON ci.city_id = tc.id                                                  						
+		LEFT JOIN                                                                                  					
+			kycom_u_user uu ON ci.user_id = uu.id                                                    					                                                                                                 					                                                    
+	   <where>
+	       <if test="crossInfo.id != null"> 
+	           ci.id = #{crossInfo.id, jdbcType=INTEGER}
+	       </if>
+	       <if test="crossInfo.provinceId != null"> 
+	           AND ci.province_id = #{crossInfo.provinceId, jdbcType=INTEGER}
+	       </if>
+	       <if test="crossInfo.cityId != null"> 
+	           AND ci.city_id = #{crossInfo.cityId, jdbcType=INTEGER}
+	       </if>
+	       <if test="crossInfo.name != null"> 
+	           AND ci.name LIKE '%${crossInfo.name}%'
+	       </if>
+	       <if test="crossInfo.workName != null"> 
+	           AND ci.work_name LIKE '%${crossInfo.workName}%'
+	       </if>
+	       <if test="crossInfo.crossNumber != null"> 
+	           AND ci.cross_number = #{crossInfo.crossNumber, jdbcType=VARCHAR}
+	       </if>
+	   </where>
+	   <if test="startpos != null and pagesize != null"> 
+	       LIMIT #{startpos, jdbcType=INTEGER}, #{pagesize, jdbcType=INTEGER}
+	   </if>
+	</select>
+	
+	 <select id="selectCountByCondition" resultType="int">
+        SELECT
+           COUNT(*)
+        FROM 
+           kycom_u_cross_info ci    	    	                                                              				     
+		LEFT JOIN                                                                                  					
+		   kycom_t_city tc ON ci.city_id = tc.id                                                  						
+		LEFT JOIN                                                                                  					
+		   kycom_u_user uu ON ci.user_id = uu.id   
+        <where>
+	        <if test="id != null"> 
+	           ci.id = #{id, jdbcType=INTEGER}
+	        </if>
+	        <if test="crossInfo.provinceId != null"> 
+	           AND ci.province_id = #{crossInfo.provinceId, jdbcType=INTEGER}
+	        </if>
+	        <if test="crossInfo.cityId != null"> 
+	           AND ci.city_id = #{crossInfo.cityId, jdbcType=INTEGER}
+	        </if>
+	        <if test="crossInfo.name != null"> 
+	           AND ci.name LIKE '%${crossInfo.name}%'
+	        </if>
+	        <if test="crossInfo.workName != null"> 
+	           AND ci.work_name LIKE '%${crossInfo.workName}%'
+	        </if>
+	        <if test="crossInfo.crossNumber != null"> 
+	           AND ci.cross_number = #{crossInfo.crossNumber, jdbcType=VARCHAR}
+	        </if>
+	   </where>   
+     </select>
+     
+     <select id="findCrossById" resultMap="BaseResultMap">
+	   	SELECT  
+	   		ci.id, ci.cross_number AS crossNumber, ci.banners, tc.name AS cityName, ci.name, ci.work_name AS workName,   
+            ci.contact_phone AS contactPhone, uu.mobile as mobile, uu.status as status, ci.sex, ci.height, ci.work_age,
+            ci.school, ci.education, ci.constellation, ci.year_birth, ci.native_place, ci.user_id, ci.province_id, ci.city_id,
+            ci.native_place_city_id, ci.native_place_province_id, ci.specialty, ci.pic
+	    FROM 
+	    	kycom_u_cross_info ci    	    	                                                              				     
+		LEFT JOIN                                                                                  					
+		    kycom_t_city tc ON ci.city_id = tc.id                                                  						
+		LEFT JOIN                                                                                  					
+			kycom_u_user uu ON ci.user_id = uu.id                                                    					                                                                                                 					                                                    
+	   <where>
+	       <if test="id != null"> 
+	           ci.id = #{id, jdbcType=INTEGER}
+	       </if>
+	   </where>    
+	  </select>
+	  	
+	 <update id="updateCrossById" parameterType="com.kunyao.assistant.core.model.CrossInfo">
+        update kycom_u_cross_info
+        <set>
+            <if test="id != null"> 
+                id = #{id,jdbcType=INTEGER},
+            </if>
+            <if test="crossNumber != null"> 
+                cross_number = #{crossNumber,jdbcType=VARCHAR},
+            </if>
+            <if test="name != null"> 
+                name = #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="workName != null"> 
+                work_name = #{workName,jdbcType=VARCHAR},
+            </if>
+            <if test="contactPhone != null"> 
+                contact_phone = #{contactPhone,jdbcType=VARCHAR},
+            </if>
+            <if test="pic != null"> 
+                pic = #{pic,jdbcType=VARCHAR},
+            </if>
+            <if test="banners != null and banners != ''"> 
+                banners = #{banners,jdbcType=DECIMAL},
+            </if>
+            <if test="height != null"> 
+                height = #{height,jdbcType=DECIMAL},
+            </if>
+            <if test="nativePlace != null"> 
+                native_place = #{nativePlace,jdbcType=VARCHAR},
+            </if>
+            <if test="yearBirth != null"> 
+                year_birth = #{yearBirth,jdbcType=VARCHAR},
+            </if>
+            <if test="school != null"> 
+                school = #{school,jdbcType=VARCHAR},
+            </if>
+            <if test="education != null"> 
+                education = #{education,jdbcType=VARCHAR},
+            </if>
+            <if test="constellation != null"> 
+                constellation = #{constellation,jdbcType=VARCHAR},
+            </if>
+            <if test="workAge != null"> 
+                work_age = #{workAge,jdbcType=INTEGER},
+            </if>
+            <if test="provinceId != null"> 
+                province_id = #{provinceId,jdbcType=INTEGER},
+            </if>
+            <if test="cityId != null"> 
+                city_id = #{cityId,jdbcType=INTEGER},
+            </if>
+            <if test="nativePlaceCityId != null"> 
+                native_place_city_id = #{nativePlaceCityId,jdbcType=INTEGER},
+            </if>
+            <if test="nativePlaceProvinceId != null"> 
+                native_place_province_id = #{nativePlaceProvinceId,jdbcType=INTEGER},
+            </if>
+            <if test="userId != null"> 
+                user_id = #{userId,jdbcType=INTEGER},
+            </if>
+            <if test="specialty != null"> 
+                specialty = #{specialty,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>	
+</mapper>

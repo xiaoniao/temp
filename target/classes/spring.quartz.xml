@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:util="http://www.springframework.org/schema/util" xmlns:task="http://www.springframework.org/schema/task"
+	xsi:schemaLocation="http://www.springframework.org/schema/mvc 
+		http://www.springframework.org/schema/mvc/spring-mvc.xsd http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd   
+       http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd   
+       http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd   
+       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+       http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd">
+
+	<bean id="crossScheduled" class="com.kunyao.assistant.core.feature.scheduled.CrossScheduled" />
+
+	<bean id="crossScheduled0" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="crossScheduled" />
+		<property name="targetMethod" value="crossWorkAge" />
+		<property name="concurrent" value="false" />
+	</bean>
+	
+	<bean id="crossScheduled1" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="crossScheduled" />
+		<property name="targetMethod" value="submitOrder" />
+		<property name="concurrent" value="false" />
+	</bean>
+	
+	<bean id="crossScheduled2" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="crossScheduled" />
+		<property name="targetMethod" value="autoFinishTravel" />
+		<property name="concurrent" value="false" />
+	</bean>
+	
+	<bean id="crossScheduled3" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="crossScheduled" />
+		<property name="targetMethod" value="orderNo" />
+		<property name="concurrent" value="false" />
+	</bean>
+	
+	<bean id="crossScheduled4" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="crossScheduled" />
+		<property name="targetMethod" value="loopPayDelay" />
+		<property name="concurrent" value="false" />
+	</bean>
+	
+	<!-- 每天早晨6点 批量修改当天行程，把行程状态从'已确认'改为'服务中' -->
+	<!-- <bean id="crossScheduled5" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="crossScheduled" />
+		<property name="targetMethod" value="travelService" />
+		<property name="concurrent" value="false" />
+	</bean> -->
+
+	<!-- 调度触发器 -->
+	<bean id="crossTrigger0" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail" ref="crossScheduled0" />
+		<property name="cronExpression" value="0 0 0 1 * ?" />
+	</bean>
+	<bean id="crossTrigger1" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail" ref="crossScheduled1" />
+		<property name="cronExpression" value="0 0/5 * * * ?" />
+	</bean>
+	<bean id="crossTrigger2" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail" ref="crossScheduled2" />
+		<property name="cronExpression" value="0 0 22 * * ?" />
+	</bean>
+	<bean id="crossTrigger3" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail" ref="crossScheduled3" />
+		<property name="cronExpression" value="1 0 0 * * ?" />
+	</bean>
+	<bean id="crossTrigger4" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail" ref="crossScheduled4" />
+		<property name="cronExpression" value="0 0 21 * * ?" />
+	</bean>
+	<!-- <bean id="crossTrigger5" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail" ref="crossScheduled5" />
+		<property name="cronExpression" value="0 0 6 * * ?" />
+	</bean> -->
+	
+	<!-- 调度工厂 -->
+	<bean id="scheduler" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+		<property name="triggers">
+			<list>
+				<ref bean="crossTrigger0" />
+				<ref bean="crossTrigger1" />
+				<ref bean="crossTrigger2" />
+				<ref bean="crossTrigger3" />
+				<ref bean="crossTrigger4" />
+				<!-- <ref bean="crossTrigger5" /> -->
+			</list>
+		</property>
+	</bean>
+
+</beans>

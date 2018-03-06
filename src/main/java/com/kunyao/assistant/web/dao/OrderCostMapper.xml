@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.kunyao.assistant.web.dao.OrderCostMapper">
+    
+    <select id="selectOrderCostList" resultType="com.kunyao.assistant.core.model.OrderCost">
+       	SELECT
+			c.id,
+			t.title AS title,
+			ci.cost_name AS costName,
+			ci.icon AS costIcon,
+			c.money,
+			c.remark,
+			c.`status`,
+			t.`status` AS travelStatus,
+			o.`status` AS orderStatus,
+			t.order_id
+		FROM
+			kycom_o_order_cost c
+		LEFT JOIN kycom_o_order_travel t ON c.order_travel_id = t.id
+		LEFT JOIN kycom_o_cost_item ci ON c.cost_item_id = ci.id
+		LEFT JOIN kycom_o_order o ON o.id = t.order_id
+        <where>
+        	<if test="orderCost.travelStatus != null">
+        		AND t.status = #{orderCost.travelStatus, jdbcType=INTEGER}
+        	</if>
+        	<if test="orderCost.status != null">
+        		AND c.status = #{orderCost.status, jdbcType=INTEGER}
+        	</if>
+        	<if test="orderCost.username != null || orderCost.orderStatus != null">
+        		AND t.id IN(
+					SELECT
+						id
+					FROM
+						kycom_o_order_travel
+					WHERE
+						order_id IN(
+							SELECT
+								id
+							FROM
+								kycom_o_order
+							<where>
+								<if test="orderCost.orderStatus != null">
+								    AND status = #{orderCost.orderStatus, jdbcType=INTEGER}
+							    </if>
+							    <if test="orderCost.username != null">
+									AND user_id =(
+										SELECT
+											id
+										FROM
+											kycom_u_user
+										WHERE
+											username = #{orderCost.username, jdbcType=VARCHAR}
+									)
+							    </if>
+						     </where>
+						)
+				)
+        	</if>
+        </where>
+        ORDER BY
+			order_id DESC
+        <if test="startpos != null and pagesize != null"> 
+        	LIMIT #{startpos, jdbcType=INTEGER}, #{pagesize, jdbcType=INTEGER}
+        </if>
+	</select>
+    
+	<select id="selectOrderCostListCount" resultType="int">
+	    SELECT
+			count(*)
+		FROM
+			kycom_o_order_cost c
+		LEFT JOIN kycom_o_order_travel t ON c.order_travel_id = t.id
+		LEFT JOIN kycom_o_cost_item ci ON c.cost_item_id = ci.id
+		LEFT JOIN kycom_o_order o ON o.id = t.order_id
+        <where>
+        	<if test="orderCost.travelStatus != null">
+        		AND t.status = #{orderCost.travelStatus, jdbcType=INTEGER}
+        	</if>
+        	<if test="orderCost.status != null">
+        		AND c.status = #{orderCost.status, jdbcType=INTEGER}
+        	</if>
+        	<if test="orderCost.username != null || orderCost.orderStatus != null">
+        		AND t.id IN(
+					SELECT
+						id
+					FROM
+						kycom_o_order_travel
+					WHERE
+						order_id IN(
+							SELECT
+								id
+							FROM
+								kycom_o_order
+							<where>
+							    <if test="orderCost.orderStatus != null">
+								    AND status = #{orderCost.orderStatus, jdbcType=INTEGER}
+							    </if>
+							    <if test="orderCost.username != null">
+									AND user_id =(
+										SELECT
+											id
+										FROM
+											kycom_u_user
+										WHERE
+											username = #{orderCost.username, jdbcType=VARCHAR}
+									)
+							    </if>
+							</where>
+						)
+				)
+        	</if>
+        </where>
+	</select> 
+</mapper>

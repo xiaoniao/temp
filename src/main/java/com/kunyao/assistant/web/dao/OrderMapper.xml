@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.kunyao.assistant.web.dao.OrderMapper">
+    <resultMap id="BaseResultMap" type="com.kunyao.assistant.core.model.Order">
+        <id column="id" property="id" jdbcType="INTEGER" />
+        <result column="user_id" property="userId" jdbcType="INTEGER" />
+        <result column="cross_user_id" property="crossUserId" jdbcType="INTEGER" />
+        <result column="city_id" property="cityId" jdbcType="INTEGER" />
+        <result column="start_time" property="startTime" jdbcType="TIMESTAMP" />
+        <result column="end_time" property="endTime" jdbcType="TIMESTAMP" />
+        <result column="assign_time" property="assignTime" jdbcType="TIMESTAMP" />
+        <result column="service_money" property="serviceMoney" jdbcType="DECIMAL" />
+        <result column="service_code" property="serviceCode" jdbcType="VARCHAR" />
+        <result column="coupon_id" property="couponId" jdbcType="INTEGER" />
+        <result column="pay_method" property="payMethod" jdbcType="INTEGER" />
+        <result column="pay_money" property="payMoney" jdbcType="DECIMAL" />
+        <result column="is_need_invoice" property="isNeedInvoice" jdbcType="INTEGER" />
+        <result column="invoice_title" property="invoiceTitle" jdbcType="VARCHAR" />
+        <result column="invoice_address" property="invoiceAddress" jdbcType="VARCHAR" />
+        <result column="invoice_people" property="invoicePeople" jdbcType="VARCHAR" />
+        <result column="invoice_mobile" property="invoiceMobile" jdbcType="VARCHAR" />
+        <result column="contact_method" property="contactMethod" jdbcType="INTEGER" />
+        <result column="cost_pay_method" property="costPayMethod" jdbcType="INTEGER" />
+        <result column="travel_desc_id" property="travelDescId" jdbcType="INTEGER" />
+        <result column="travel_require_text" property="travelRequireText" jdbcType="VARCHAR" />
+        <result column="travel_require_voice" property="travelRequireVoice" jdbcType="VARCHAR" />
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+        <result column="open_id" property="openId" jdbcType="VARCHAR" />
+        <result column="status" property="status" jdbcType="INTEGER" />
+    </resultMap>
+    
+    <select id="selectOrderList" resultType="com.kunyao.assistant.core.model.Order">
+        SELECT
+            oo.id AS id,
+            oo.user_id AS userId,
+            oo.cross_user_id AS crossUserId, 
+            oo.city_id AS cityId,
+            oo.start_time AS startTime,
+            oo.end_time AS endTime,
+            oo.assign_time AS assignTime,
+            oo.service_money AS serviceMoney,
+            oo.service_code AS serviceCode,
+            oo.coupon_id AS couponId,
+            oo.pay_method AS payMethod,
+            oo.pay_money AS payMoney,
+            oo.is_need_invoice AS isNeedInvoice,
+            oo.invoice_title AS invoiceTitle,
+            oo.invoice_address AS invoiceAddress,
+            oo.invoice_people AS invoicePeople,
+            oo.invoice_mobile AS invoiceMobile,
+            oo.contact_method AS contactMethod,
+            oo.cost_pay_method AS costPayMethod,
+            oo.travel_desc_id AS travelDescId,
+            oo.travel_require_text AS travelRequireText,
+            oo.travel_require_voice AS travelRequireVoice,
+            oo.create_time AS createTime,
+            oo.create_time AS createDate,
+            oo.assign_time AS assignDate,
+            oo.open_id AS openId,
+            oo.status AS status,
+            oo.start_time AS startDate,
+            oo.end_time AS endDate,
+            tc.name AS cityName,
+            uu.mobile AS mobile,
+            umi.name AS memberName,
+            uci.cross_number AS crossNumber,
+            uci.work_name AS workName,
+            oo.status AS orderStatus,
+            uci.name AS crossName,
+            uci.contact_phone AS crossContactPhone,
+            oo.order_card AS orderCard
+        FROM 
+            kycom_o_order oo   
+        LEFT JOIN 
+        	kycom_t_city tc  ON oo.city_id = tc.id
+        LEFT JOIN
+        	kycom_u_user uu ON oo.user_id = uu.id
+        LEFT JOIN
+        	kycom_u_member_info umi ON uu.userinfo_id = umi.id       
+        LEFT JOIN
+        	kycom_u_cross_info uci ON oo.cross_user_id = uci.user_id
+        <where>
+        	<if test="order.id != null">
+        		 oo.id = #{order.id, jdbcType=INTEGER}
+        	</if>
+        	<if test="order.orderCard != null">
+        		AND oo.order_card = #{order.orderCard, jdbcType=VARCHAR}
+        	</if>
+        	<if test="order.cityId != null">
+        		AND oo.city_id = #{order.cityId, jdbcType=INTEGER}
+        	</if>
+        	<if test="order.status != null">
+        		AND oo.status = #{order.status, jdbcType=INTEGER}
+        	</if>
+        	<if test="order.mobile != null">
+        		AND uu.mobile = #{order.mobile, jdbcType=VARCHAR}
+        	</if>
+        	<if test="order.crossNumber != null">
+        		AND uci.cross_number = #{order.crossNumber, jdbcType=VARCHAR}
+        	</if>
+        	<if test="order.orderDate == 'orderDate' and order.logmin != null and order.logmax != null">
+            	AND (oo.create_time <![CDATA[ >= ]]> #{order.logmin, jdbcType=VARCHAR} AND oo.create_time <![CDATA[ < ]]> #{order.logmax, jdbcType=VARCHAR})	
+            </if>
+            
+            <if test="order.travelDate == 'travelDate' and order.logmin != null and order.logmax != null">
+            	AND (oo.start_time <![CDATA[ >= ]]> #{order.logmin, jdbcType=VARCHAR} AND oo.start_time <![CDATA[ < ]]> #{order.logmax, jdbcType=VARCHAR})		
+            </if>
+            
+            <if test="order.endDate == 'endDate' and order.logmin != null and order.logmax != null">
+            	AND (oo.end_time <![CDATA[ >= ]]> #{order.logmin, jdbcType=VARCHAR} AND oo.end_time <![CDATA[ < ]]> #{order.logmax, jdbcType=VARCHAR})		
+            </if>
+            
+            <if test="order.stateQuery != null and order.stateQuery == 'stateQuery'">
+        		AND oo.id in
+        		 <foreach item="item" index="index" collection="order.orderId" open="(" separator="," close=")">  
+  					#{item}  
+ 				</foreach> 
+        	</if>
+        </where>
+        order by oo.create_time desc 	
+        <if test="startpos != null and pagesize != null"> 
+        	LIMIT #{startpos, jdbcType=INTEGER}, #{pagesize, jdbcType=INTEGER}
+        </if>
+	</select>
+    
+     <select id="selectOrderCount" resultType="int">
+        SELECT
+            COUNT(*)
+        FROM 
+            kycom_o_order oo   
+        LEFT JOIN 
+        	kycom_t_city tc  ON oo.city_id = tc.id
+        LEFT JOIN
+        	kycom_u_user uu ON oo.user_id = uu.id
+        LEFT JOIN
+        	kycom_u_member_info umi ON uu.userinfo_id = umi.id       
+        LEFT JOIN
+        	kycom_u_cross_info uci ON oo.cross_user_id = uci.user_id
+        <where>
+        	<if test="order.id != null">
+        		 oo.id = #{order.id, jdbcType=INTEGER}
+        	</if>
+        	<if test="order.orderCard != null">
+        		AND oo.order_card = #{order.orderCard, jdbcType=VARCHAR}
+        	</if>
+        	<if test="order.userId != null">
+        		AND oo.user_id = #{order.userId, jdbcType=INTEGER}
+        	</if>
+        	<if test="order.cityId != null">
+        		AND oo.city_id = #{order.cityId, jdbcType=INTEGER}
+        	</if>
+        	<if test="order.status != null">
+        		AND oo.status = #{order.status, jdbcType=INTEGER}
+        	</if>
+        	<if test="order.mobile != null">
+        		AND uu.mobile = #{order.mobile, jdbcType=VARCHAR}
+        	</if>
+        	<if test="order.crossNumber != null">
+        		AND uci.cross_number = #{order.crossNumber, jdbcType=VARCHAR}
+        	</if>
+        	<if test="order.orderDate == 'orderDate' and order.logmin != null and order.logmax != null">
+            	AND (oo.create_time <![CDATA[ >= ]]> #{order.logmin, jdbcType=VARCHAR} AND oo.create_time <![CDATA[ < ]]> #{order.logmax, jdbcType=VARCHAR})	
+            </if>
+            
+            <if test="order.travelDate == 'travelDate' and order.logmin != null and order.logmax != null">
+            	AND (oo.start_time <![CDATA[ >= ]]> #{order.logmin, jdbcType=VARCHAR} AND oo.start_time <![CDATA[ < ]]> #{order.logmax, jdbcType=VARCHAR})		
+            </if>
+            
+            <if test="order.endDate == 'endDate' and order.logmin != null and order.logmax != null">
+            	AND (oo.end_time <![CDATA[ >= ]]> #{order.logmin, jdbcType=VARCHAR} AND oo.end_time <![CDATA[ < ]]> #{order.logmax, jdbcType=VARCHAR})		
+            </if>
+            
+            <if test="order.stateQuery != null and order.stateQuery == 'stateQuery'">
+        		AND oo.id in
+        		 <foreach item="item" index="index" collection="order.orderId" open="(" separator="," close=")">  
+  					#{item}  
+ 				</foreach> 
+        	</if>
+        </where> 	
+    </select> 
+</mapper>

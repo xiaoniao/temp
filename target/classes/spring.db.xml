@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" 
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	   xmlns:p="http://www.springframework.org/schema/p"
+	   xsi:schemaLocation="
+	       http://www.springframework.org/schema/beans
+	       http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+    
+     <!-- 定义数据源 使用druid连接池 -->  
+    <bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource"
+          init-method="init"
+          destroy-method="close" >
+        <property name="driverClassName" value="${jdbc.driverClassName}" />  
+        <property name="url" value="${jdbc.url}" />  
+        <property name="username" value="${jdbc.username}" />  
+        <property name="password" value="${jdbc.password}" />  
+        <property name="initialSize" value="${druid.initialSize}" /> <!-- 初始化连接数量 type:int -->  
+        <property name="maxActive" value="${druid.maxActive}" /> <!-- 最大并发数量 type:int -->  
+        <property name="minIdle" value="${druid.minIdle}" /><!-- 最小空闲数量 type:int -->  
+        <property name="maxWait" value="${druid.maxWait}" /><!-- 配置获取连接等待超时的时间,单位：毫秒 type:long --> 
+        <property name="poolPreparedStatements" value="${druid.poolPreparedStatements}" /><!-- 开启PSCache，并且指定每个连接上PSCache的大小 -->  
+    </bean>
+    
+    <!-- mybatis文件配置，扫描所有mapper文件 -->  
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean" scope="singleton" 
+    	  p:dataSource-ref="dataSource"  
+		  p:configLocation="classpath:mybatis-config.xml"
+		  p:mapperLocations="classpath:com/kunyao/assistant/web/dao/*.xml"/> 
+
+    <!-- spring与mybatis整合配置，扫描所有dao -->
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer" 
+	      p:basePackage="com.kunyao.assistant.web.dao"
+		  p:sqlSessionFactoryBeanName="sqlSessionFactory"/>
+    
+    
+       <bean id="crossNumberIncrementer" class="org.springframework.jdbc.support.incrementer.MySQLMaxValueIncrementer">
+       <property name="dataSource">
+           <ref local="dataSource"/>
+       </property>
+       <property name="incrementerName">
+           <!--表名 -->
+           <value>kycom_dbtables_id</value>
+       </property>
+       <property name="columnName">
+           <!--字段名字 -->
+           <value>cross_number</value>
+       </property>
+       <!--一次从数据库中取多少个值 -->
+       <property name="cacheSize" value="10"/> 
+    </bean>
+</beans>

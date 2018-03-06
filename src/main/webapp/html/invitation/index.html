@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no" />
+		<title></title>
+		<link rel="stylesheet" href="css/style.css" />
+	</head>
+	<body>
+		<div class="banner"></div>
+		<div class="accept-invite">
+			<div id="source"></div>
+			<div>注册成为城市金鹰会员</div>
+		</div>
+		<form class="register-form" action="">
+			<div class="input-container">
+				<div class="register-group">
+					<span>1</span>
+					<input type="text" name="name" id="realName" placeholder="请输入真实姓名" />
+				</div>
+				<div class="register-group">
+					<span>2</span>
+					<input type="text" name="mobile" id="mobile" placeholder="请输入注册手机号码" maxlength="11" />
+				</div>
+				<div class="register-group">
+					<span>3</span>
+					<input type="text" name="code" id="code" placeholder="请输入验证码" />
+					<span class="code right">获取验证码</span>
+				</div>
+				<div class="register-group">
+					<span>4</span>
+					<div class="selected">
+						<i></i>
+						<input type="radio" name="sex" id="man" value="0" checked="checked"/>
+						<label for="man">先生</label>
+					</div>
+					<div>
+						<i></i>
+						<input type="radio" name="sex"  id="woman" value="1"/>
+						<label for="woman">女士</label>
+					</div>
+				</div>
+			</div>
+			<div class="note" id="wrongNumber"><span></span>请输入正确的手机号码！</div>
+			<div class="note" id="noName"><span></span>请输入您的真实姓名</div>
+			<div class="note" id="paramsErr"><span></span>参数错误</div>
+			<div class="note" id="codeSended"><span></span>验证码已发送</div>
+			<div class="note" id="sendedErr"><span></span>验证码发送失败</div>
+			<div class="note" id="timesOver"><span></span>您操作过于频繁，请稍后再试</div>
+			<div class="note" id="mobileForbidden"><span></span>该手机号已被禁用，详情请联系客服</div>
+			<div class="note" id="nameInvalid"><span></span>实名认证未通过，请确认姓名与手机号填写无误</div>
+			<div class="note" id="codeErr"><span></span>验证码错误</div>
+			<div class="note" id="timeout"><span></span>验证码已失效</div>
+			<div class="note" id="exception"><span></span>服务器异常</div>
+			<div class="note" id="noCode"><span></span>请填写验证码</div>
+			<input type="button" value="注册成为会员" class="register-btn" />
+		</form>
+		
+		<div id="userExist" class="register-result">
+			<div class="backdrop"></div>
+			<div class="register-result-content">
+				<div></div>
+				<div class="register-bottom">
+					<div class="sign fail"></div>
+					<div class="register-text">
+						<div>您已是城市金鹰会员</div>
+						<div>马上下载城侍金鹰APP，开启商务之旅！</div>
+						<button>下载城侍金鹰APP</button>
+					</div>
+					<div class="circle-back"></div>
+				</div>
+			</div>
+		</div>
+		<div id="reg_success" class="register-result">
+			<div class="backdrop"></div>
+			<div class="register-result-content">
+				<div></div>
+				<div class="register-bottom">
+					<div class="sign success"></div>
+					<div class="register-text">
+						<div>恭喜您注册成功</div>
+						<div>马上下载城侍金鹰APP，开启商务之旅！</div>
+						<button>下载城侍金鹰APP</button>
+					</div>
+					<div class="circle-back"></div>
+				</div>
+			</div>
+		</div>
+		<script type="text/javascript" src="js/jquery-1.8.3.min.js"></script>
+		<script type="text/javascript" src="js/main.js"></script>
+		<script>
+	        var oHtml = document.getElementsByTagName('html')[0];
+	        var scrWid = document.documentElement.offsetWidth || document.body.offsetWidth;
+	        var initWid = 750;
+	        oHtml.style.fontSize = 100 * scrWid/initWid + 'px';
+	    </script>
+	</body>
+</html>

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.kunyao.assistant.web.dao.BrandMapper">
+	<resultMap id="BaseResultMap" type="com.kunyao.assistant.core.model.Brand">
+	   <id column="id" property="id" jdbcType="INTEGER" />
+	   <result column="name" property="name" jdbcType="VARCHAR" />
+	   <result column="province_id" property="provinceId" jdbcType="INTEGER" />
+	   <result column="city_id" property="cityId" jdbcType="INTEGER" />
+	   <result column="sort" property="sort" jdbcType="INTEGER" />
+	   <result column="img" property="img" jdbcType="VARCHAR" />
+	   <result column="url" property="url" jdbcType="VARCHAR" />
+	   <result column="status" property="status" jdbcType="INTEGER" />
+	</resultMap>
+
+	<select id="selectBrandList" resultMap="BaseResultMap" parameterType="com.kunyao.assistant.core.model.Brand">
+	   	SELECT  
+	   		tb.id, 
+	   		tb.name, 
+	   		tb.province_id, 
+	   		tb.city_id, 
+	   		tb.sort,
+	   		tb.img,
+	   		tb.url,
+	   		tb.status,
+	   		tc.name as cityName
+	    FROM 
+	    	kycom_t_brand tb
+	    LEFT JOIN 
+	    	kycom_t_city tc ON tb.city_id = tc.id    	    	                                                              				                                                  					                                                                                                 					                                                    
+	   <where>
+	       <if test="brand.provinceId != null"> 
+	           tb.province_id = #{brand.provinceId, jdbcType=INTEGER}
+	       </if>
+	       <if test="brand.cityId != null"> 
+	           and tb.city_id = #{brand.cityId, jdbcType=INTEGER}
+	       </if>
+	       <if test="brand.name != null"> 
+	           and tb.name LIKE '%${brand.name}%'
+	       </if>
+	   </where>
+	   order by tb.status DESC, tb.sort
+	   <if test="startpos != null and pagesize != null"> 
+	       LIMIT #{startpos, jdbcType=INTEGER}, #{pagesize, jdbcType=INTEGER}
+	   </if>
+	</select>
+	
+	 <select id="selectCountByCondition" resultType="int">
+       	SELECT  
+	   		count(0)
+	    FROM 
+	    	kycom_t_brand tb
+	    LEFT JOIN 
+	    	kycom_t_city tc ON tb.city_id = tc.id    	    	                                                              				                                                  					                                                                                                 					                                                    
+	   <where>
+	       <if test="brand.provinceId != null"> 
+	           tb.province_id = #{brand.provinceId, jdbcType=INTEGER}
+	       </if>
+	       <if test="brand.cityId != null"> 
+	           and tb.city_id = #{brand.cityId, jdbcType=INTEGER}
+	       </if>
+	       <if test="brand.name != null"> 
+	           and tb.name LIKE '%${brand.name}%'
+	       </if>
+	   </where>
+     </select>
+</mapper>

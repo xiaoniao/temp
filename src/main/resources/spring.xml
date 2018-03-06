@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	  xmlns:context="http://www.springframework.org/schema/context"
+	  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:task="http://www.springframework.org/schema/task"
+	  xsi:schemaLocation="  
+	       http://www.springframework.org/schema/context
+	       http://www.springframework.org/schema/context/spring-context.xsd
+	       http://www.springframework.org/schema/beans
+	       http://www.springframework.org/schema/beans/spring-beans.xsd
+	       http://www.springframework.org/schema/task 
+	       http://www.springframework.org/schema/task/spring-task-3.2.xsd">
+	
+    <!-- 扫描com.kunyao.assistant包，把带有注解的类纳入Spring容器管理 -->
+    <context:component-scan base-package="com.kunyao.assistant"></context:component-scan>
+    
+    <!-- 识别@Scheduled注解 -->
+    <task:annotation-driven executor="qbExecutor" scheduler="qbScheduler" mode="proxy"/>
+    
+    <!-- 定时器线程池大小 -->
+    <task:scheduler id="qbScheduler" pool-size="10"/>
+    
+    <!-- 异步任务 -->
+    <task:executor id="qbExecutor" pool-size="5"/>
+    
+    <!-- 指定多个 property 文件 -->
+    <bean id="propertyConfigurer"
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer"
+		lazy-init="false">
+		<property name="locations">
+			<list>
+				<value>classpath*:jdbc.properties</value>
+				<value>classpath*:log4j.properties</value>
+			</list>
+		</property>
+	</bean>
+	
+	<!-- Kaptcha 验证码 -->
+	<bean id="captchaProducer" class="com.google.code.kaptcha.impl.DefaultKaptcha">  
+        <property name="config">  
+            <bean class="com.google.code.kaptcha.util.Config">  
+                <constructor-arg>
+                    <props>
+                        <prop key="kaptcha.border">yes</prop>  
+                        <prop key="kaptcha.border.color">240,255,255</prop>  
+                        <prop key="kaptcha.textproducer.font.color">blue</prop>  
+                        <prop key="kaptcha.image.width">100</prop>
+                        <prop key="kaptcha.image.height">50</prop>
+                        <prop key="kaptcha.textproducer.font.size">40</prop>  
+                        <prop key="kaptcha.session.key">code</prop>  
+                        <prop key="kaptcha.textproducer.char.length">4</prop>  
+                        <prop key="kaptcha.textproducer.font.names">宋体,楷体,微软雅黑</prop>  
+                    </props>
+                </constructor-arg>  
+            </bean>  
+        </property>  
+    </bean>
+    
+    <import resource="classpath:spring.cache.xml"/>
+    <import resource="classpath:spring.db.xml"/>
+    <import resource="classpath:spring.mvc.xml"/>
+    <import resource="classpath:spring.security.xml"/>
+    <import resource="classpath:spring.transaction.xml"/>
+    <import resource="classpath:spring.quartz.xml"/>
+    <import resource="classpath:spring.socketio.xml"/>
+    
+    <bean id="MemcachedInit" class="com.kunyao.assistant.web.init.MemcachedInit" init-method="init" />
+</beans>

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ehcache updateCheck="false" name="shiro-cache">
+    
+    <!-- 指定磁盘中的存贮位置 -->
+    <!-- <diskStore path="java.io.tmpdir"/> -->
+    
+    <!-- maxElementsInMemory：在内存中缓存的element的最大数目 -->
+    
+    <!-- eternal：设定缓存的elements是否永远不过期。如果为true，则缓存的数据始终有效，如果为false那么还要根据timeToIdleSeconds，timeToLiveSeconds判断 -->
+    
+    <!-- timeToIdleSeconds：对象空闲时间，指对象在多长时间没有被访问就会失效。只对eternal为false的有效.默认值0，表示一直可以访问。 -->
+    
+    <!-- timeToLiveSeconds：对象存活时间，指对象从创建到失效所需要的时间。只对eternal为false的有效。默认值0，表示一直可以访问。 -->
+    
+    <!-- overflowToDisk：内存不足时，是否启用磁盘缓存 -->
+    
+    <!-- diskPersistent：是否在磁盘上持久化。指重启jvm后，数据是否有效。默认为false -->
+    
+    <!-- diskExpiryThreadIntervalSeconds：对象检测线程运行时间间隔。标识对象状态的线程多长时间运行一次。 -->
+    
+    <!-- diskSpoolBufferSizeMB： DiskStore使用的磁盘大小，默认值30MB。每个cache使用各自的DiskStore。  -->
+		
+	<!-- memoryStoreEvictionPolicy： 如果内存中数据超过内存限制，向磁盘缓存时的策略。默认值LRU，可选FIFO、LFU。 -->
+	
+	<!-- 默认策略 -->
+	<defaultCache
+		maxElementsInMemory="10000"
+		eternal="false"
+		timeToIdleSeconds="120"
+		timeToLiveSeconds="120"
+		overflowToDisk="false"
+		diskPersistent="false"
+		diskExpiryThreadIntervalSeconds="120"/>
+</ehcache>

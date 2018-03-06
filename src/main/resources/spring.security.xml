@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+         http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+	     http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<description>apache shiro配置</description>
+
+	<bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
+		<property name="securityManager" ref="securityManager" />
+		<property name="loginUrl" value="/rest/page/tologin" />
+		<property name="successUrl" value="/rest/page/index" />
+		<property name="unauthorizedUrl" value="/rest/page/401" />
+		<property name="filterChainDefinitions">
+			<value>
+				<!-- 资源接口 -->
+				/assets/**        = anon
+				/html/**          = anon
+				/img/**           = anon
+				/javascript/**    = anon
+				/lib/**           = anon
+				/member-client/** = anon
+				/picture/**       = anon
+				/static/**        = anon
+				
+				<!-- 在线聊天 -->
+				/rest/chat/** = anon
+				
+				<!-- 客户端 -->
+				/rest/mc/** = anon
+				
+				<!-- 金鹰端 -->
+				/rest/cc/** = anon
+				
+				<!-- 资源 -->
+				/rest/um/resource/** = anon
+				/rest/um/resourceSuggest/** = anon
+				/rest/um/resourceType/** = anon
+				
+				<!-- 版本更新 -->
+				/rest/version/** = anon
+				
+				<!-- 后台登录验证码 -->
+                /rest/user/kaptcha = anon
+                /rest/user/login = anon
+                
+                <!-- 第三方回调  -->
+                /rest/callback/alipay = anon
+                /rest/mc/wx/** = anon
+                /rest/mc/cmbc/** = anon
+                
+                <!-- 测试 -->
+                /rest/um/setting/** = anon
+                
+                /druid/** = anon
+				
+				<!-- 其他资源需要认证 -->
+                /** = authc
+			</value>
+		</property>
+	</bean>
+
+	<!-- 安全管理器 -->
+	<bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
+		<property name="realm" ref="securityRealm" />
+
+		<!-- cacheManager,集合spring缓存工厂 -->
+		<property name="cacheManager" ref="shiroEhcacheManager" />
+	</bean>
+
+	<!-- 缓存管理器 使用Ehcache实现 -->
+	<bean id="shiroEhcacheManager" class="org.apache.shiro.cache.ehcache.EhCacheManager">
+		<property name="cacheManagerConfigFile" value="classpath:cache/ehcache-shiro.xml" />
+	</bean>
+
+	<!-- Shiro生命周期处理器 -->
+	<bean id="lifecycleBeanPostProcessor" class="org.apache.shiro.spring.LifecycleBeanPostProcessor" />
+
+	<!-- 启用shrio授权注解拦截方式 -->
+	<aop:config proxy-target-class="true"></aop:config>
+	<bean class="org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor">
+		<property name="securityManager" ref="securityManager" />
+	</bean>
+
+</beans>
